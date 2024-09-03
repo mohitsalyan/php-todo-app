@@ -1,178 +1,213 @@
 <?php 
-	$connection = mysqli_connect('localhost','root','','simple_todo');
-	 
-	 $id = '';
+// Database connection
+$connection = mysqli_connect('db', 'root', 'rootpassword', 'simple_todo');
 
-	if (isset($_POST['todo']) && empty($_POST['id']) ) {
-			$todo =	$_POST['todo'];
-			if (!empty($todo)) {
-				if (insertTodo($todo,$connection) == true) {
-				echo "<script>alert('Todos Inserted');</script>";
-			 }
-			}else{
-				echo "<script>alert('Please Inserted Todo');</script>";
-			}
-			
-			
-	}
+// Check connection
+if (!$connection) {
+    die("Connection failed: " . mysqli_connect_error());
+}
 
-	if (isset($_POST['todo']) && !empty($_POST['id']) ) {
-		$id  =  $_POST['id'];
-	  	$todo = $_POST['todo'];
-	  	 if(UpdateTodo($id,$todo,$connection)){
-			   echo "<script>alert('Todos Updated');</script>";
-		   }
-			
-	}
+$id = '';
 
-	if (isset($_GET['delete_id'])) {
-		$id = $_GET['delete_id'];
-		if (DeleteTodo($id,$connection) == true) {
-			echo "<script>alert('Todos Deleted');</script>";
-		}
-		
-	}
-	if (isset($_GET['marking_id'])) {
-		$id = $_GET['marking_id'];
-		if (CompleteTodo($id,$connection)== true) {
-			echo "<script>alert('Todos Complete Successfully');</script>";
-		}
-	}
+// Handle form submissions
+if (isset($_POST['todo']) && empty($_POST['id'])) {
+    $todo = $_POST['todo'];
+    if (!empty($todo)) {
+        if (insertTodo($todo, $connection)) {
+            echo "<script>alert('Todo Inserted');</script>";
+        } else {
+            echo "<script>alert('Error inserting Todo');</script>";
+        }
+    } else {
+        echo "<script>alert('Please enter a Todo');</script>";
+    }
+}
 
-	function InsertTodo($todo,$connection)
-	{
-		
-		$query = "INSERT INTO todos set todo = '$todo' ";
-		$result = mysqli_query($connection,$query);
-		if ($result == true) {
-			return true;
-		}else{
-			return false;
-		}
-	}
+if (isset($_POST['todo']) && !empty($_POST['id'])) {
+    $id = $_POST['id'];
+    $todo = $_POST['todo'];
+    if (updateTodo($id, $todo, $connection)) {
+        echo "<script>alert('Todo Updated');</script>";
+    } else {
+        echo "<script>alert('Error updating Todo');</script>";
+    }
+}
 
-	function DeleteTodo($id,$connection)
-	{
-		$query = "Delete from todos where id = '$id' ";
-		$result = mysqli_query($connection,$query);
-		if ($result == true) {
-			return true;
-		}else{
-			return false;
-		}
-	}
+if (isset($_GET['delete_id'])) {
+    $id = $_GET['delete_id'];
+    if (deleteTodo($id, $connection)) {
+        echo "<script>alert('Todo Deleted');</script>";
+    } else {
+        echo "<script>alert('Error deleting Todo');</script>";
+    }
+}
 
+if (isset($_GET['marking_id'])) {
+    $id = $_GET['marking_id'];
+    if (completeTodo($id, $connection)) {
+        echo "<script>alert('Todo marked as complete');</script>";
+    } else {
+        echo "<script>alert('Error marking Todo as complete');</script>";
+    }
+}
 
-	function CompleteTodo($id,$connection)
-	{
-	    $query = "UPDATE todos set completed = 1 where id = '$id'";
-		$result = mysqli_query($connection,$query);
-		if ($result == true) {
-			return true;
-		}else{
-			return false;
-		}
+function insertTodo($todo, $connection) {
+    $query = "INSERT INTO todos (todo) VALUES ('$todo')";
+    return mysqli_query($connection, $query);
+}
 
-	}
-	if(isset($_POST['update'])){
-		$id = $_POST['update_id'];
-		$data = GetTodo($id,$connection);
-	}
-		function GetTodo($id,$connection)
-	{
-		$query = "select * from todos where id = '$id' ";
-		$result = mysqli_query($connection,$query);
-		if ($result == true) {
-			return	mysqli_fetch_assoc($result);
-		}else{
-			return false;
-		}
+function deleteTodo($id, $connection) {
+    $query = "DELETE FROM todos WHERE id = '$id'";
+    return mysqli_query($connection, $query);
+}
 
-	}
-		function UpdateTodo($id,$todo,$connection)
-	{
-		$query = "Update todos set todo = '$todo' where id = '$id' ";
-		$result = mysqli_query($connection,$query);
-		if (mysqli_error($connection)) {
-			die(mysqli_error($connection));
-		}
-	}
- ?>
- 
+function completeTodo($id, $connection) {
+    $query = "UPDATE todos SET completed = 1 WHERE id = '$id'";
+    return mysqli_query($connection, $query);
+}
+
+if (isset($_POST['update'])) {
+    $id = $_POST['update_id'];
+    $data = getTodo($id, $connection);
+}
+
+function getTodo($id, $connection) {
+    $query = "SELECT * FROM todos WHERE id = '$id'";
+    $result = mysqli_query($connection, $query);
+    return $result ? mysqli_fetch_assoc($result) : false;
+}
+
+function updateTodo($id, $todo, $connection) {
+    $query = "UPDATE todos SET todo = '$todo' WHERE id = '$id'";
+    return mysqli_query($connection, $query);
+}
+?>
 
 <!DOCTYPE html>
 <html>
 <head>
-	<title>A Basic Todo</title>
-		<style type="text/css">
-		input[type="text"]{
-			padding: 10px 20px 10px 20px;
-			width: 400px;
-			margin-top: 5px;
-		}
-		.wrapper{
-			width:40%;
-			margin: 0 auto;
-			border-left: 2px solid #ddd;
-			border-right: 2px solid #ddd;
-			border-top: 2px solid #ddd;
-			background-color:#bebebe;
-		}
-		.form {
-			display: inline-block;
-		}
-		a {
-			text-decoration:none;
-			color: #3e3e3e;
-		}
-		.button{
-			background-color: #4CAF50; /* Green */
-			border: none;
-			color: white;
-			padding: 10px 16px;
-			text-align: center;
-			text-decoration: none;
-			display: inline-block;
-			font-size: 12px;
-			margin: 4px 2px;
-			cursor: pointer;
-		}
-		
-	</style>
+    <title>3-Tier PHP Todo App</title>
+    <style type="text/css">
+        body {
+            background-color: #f0f8ff; /* Light blue background */
+            color: #333; /* Text color */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #4CAF50; /* Green background */
+            color: white; /* White text */
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .wrapper {
+            width: 40%;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px #aaa;
+            background-color: #fafafa;
+        }
+        input[type="text"] {
+            padding: 10px 20px;
+            width: 80%;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 10px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .form {
+            display: inline-block;
+        }
+        a {
+            text-decoration: none;
+            color: #3e3e3e;
+        }
+        .todo-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .todo-item:last-child {
+            border-bottom: none;
+        }
+        hr {
+            margin-top: 20px;
+            border: 0;
+            border-top: 1px solid #ddd;
+        }
+        .footer {
+            background-color: #4CAF50; /* Green background */
+            color: white; /* White text */
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            font-size: 14px;
+        }
+        .footer .banner {
+            background-color: #FFD700; /* Gold background */
+            padding: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-<div class="wrapper">
-	<form method="post" action="index.php">
-		<div>
-			<center>
-			<input type="text" name="todo" placeholder="create new todo" value="<?php if (isset($_POST['update_id'])) {echo $data['todo'];}  ?>" required>
-			<input type="hidden" name="id" value="<?php if (isset($_POST['update_id'])) {echo $data['id'];}  ?>" >
-			<input class="button" type="submit" value="Submit">
-			</center>
-		</div>
-	</form>
-	<br><br>
+    <div class="header">Welcome to SenDevOps - 3-Tier PHP Todo App</div>
+    <div class="wrapper">
+        <form method="post" action="index.php">
+            <div>
+                <center>
+                    <input type="text" name="todo" placeholder="Create new todo" value="<?php if (isset($_POST['update_id'])) { echo htmlspecialchars($data['todo']); } ?>" required>
+                    <input type="hidden" name="id" value="<?php if (isset($_POST['update_id'])) { echo htmlspecialchars($data['id']); } ?>">
+                    <input class="button" type="submit" value="Submit">
+                </center>
+            </div>
+        </form>
+        <br><br>
 
-	<?php 
-	$query = "select * from todos order by id desc";
-	$result = mysqli_query($connection,$query);
-	$row = mysqli_fetch_all($result, MYSQLI_ASSOC);
-	foreach ($row as $todos) { ?>
-		<center>
-		<?php echo $todos['todo'];  ?>
-	  		<button><a href='index.php?delete_id=<?php echo $todos['id']; ?>'>Delete</a></button>
-				<form class="form" method="post" action="">
-					<input type="hidden" name="update_id" value="<?php  echo $todos['id']; ?>">
-					<input type="submit" value="Update" name="update">
-				</form>
-	   <?php if ($todos['completed'] == 1) {
-	  	echo "Completed";
-	  }else{ ?>
-	  			<button><a href='index.php?marking_id=<?php echo $todos['id']; ?>'>Mark complete</a></button>
-	 <?php } ?>
-		<hr>
-	</center>
-<?php } ?>
-</div>
+        <?php 
+        $query = "SELECT * FROM todos ORDER BY id DESC";
+        $result = mysqli_query($connection, $query);
+        $row = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        foreach ($row as $todos) { ?>
+            <div class="todo-item">
+                <center>
+                    <?php echo htmlspecialchars($todos['todo']); ?>
+                    <button><a href='index.php?delete_id=<?php echo htmlspecialchars($todos['id']); ?>'>Delete</a></button>
+                    <form class="form" method="post" action="">
+                        <input type="hidden" name="update_id" value="<?php echo htmlspecialchars($todos['id']); ?>">
+                        <input type="submit" value="Update" name="update">
+                    </form>
+                    <?php if ($todos['completed'] == 1) {
+                        echo "Completed";
+                    } else { ?>
+                        <button><a href='index.php?marking_id=<?php echo htmlspecialchars($todos['id']); ?>'>Mark complete</a></button>
+                    <?php } ?>
+                </center>
+            </div>
+            <hr>
+        <?php } ?>
+    </div>
+    <div class="footer">
+        <div class="banner">Welcome to SenDevOps</div>
+        All rights reserved by SenDevOps
+    </div>
 </body>
 </html>
