@@ -1,0 +1,21 @@
+services:
+  web:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    container_name: php-web
+    ports:
+      - "8085:80"
+    volumes:
+      - ./src:/var/www/html
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest  # Specify the phpMyAdmin image version or tag
+    container_name: phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: mydb.croaiuaygpys.ap-south-1.rds.amazonaws.com  # Your RDS endpoint
+      PMA_PORT: 3306
+      PMA_USER: admin  # Your RDS username
+      PMA_PASSWORD: rootpassword123  # Your RDS password
