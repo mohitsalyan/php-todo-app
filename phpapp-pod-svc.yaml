@@ -13,9 +13,7 @@ spec:
   dnsPolicy: ClusterFirst
   restartPolicy: Always
 status: {}
-
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
