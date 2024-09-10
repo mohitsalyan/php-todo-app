@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: phpapp-pod
+  name: phpapp-pod
+spec:
+  containers:
+  - image: fir3eye/php-app:v9
+    name: phpapp-pod
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}

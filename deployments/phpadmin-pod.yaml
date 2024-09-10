@@ -18,21 +18,4 @@ spec:
   dnsPolicy: ClusterFirst
   restartPolicy: Always
 status: {}
----
-apiVersion: v1
-kind: Service
-metadata:
-  creationTimestamp: null
-  labels:
-    run: phpadmin-pod
-  name: phpadmin-svc
-spec:
-  ports:
-  - port: 8010
-    protocol: TCP
-    targetPort: 80
-  selector:
-    run: phpadmin-pod
-  type: NodePort
-status:
-  loadBalancer: {}
+
