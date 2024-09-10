@@ -28,7 +28,7 @@ metadata:
   name: phpadmin-svc
 spec:
   ports:
-  - port: 8085
+  - port: 8010
     protocol: TCP
     targetPort: 80
   selector:
