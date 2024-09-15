@@ -1,6 +1,6 @@
 <?php 
 // Database connection
-$connection = mysqli_connect('10.96.104.194', 'root', 'rootpassword', 'mydb');
+$connection = mysqli_connect('10.96.182.195', 'root', 'rootpassword', 'mydb');
 
 // Check connection
 if (!$connection) {
