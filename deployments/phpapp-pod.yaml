@@ -7,7 +7,7 @@ metadata:
   name: phpapp-pod
 spec:
   containers:
-  - image: fir3eye/php-app:v2
+  - image: fir3eye/php-app:v4
     name: phpapp-pod
     resources: {}
   dnsPolicy: ClusterFirst
