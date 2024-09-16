@@ -2,8 +2,6 @@
 ## Output
 ![image](https://github.com/user-attachments/assets/6c5b5464-d7b8-446e-afcb-f25804bcff69)
 
-
-
 # Mysql Pod
 - db-cm
 ```
