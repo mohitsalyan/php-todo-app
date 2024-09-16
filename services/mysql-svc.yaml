@@ -12,6 +12,5 @@ spec:
     targetPort: 3306
   selector:
     run: mysql-pod
-  type: ClusterIP
 status:
   loadBalancer: {}
