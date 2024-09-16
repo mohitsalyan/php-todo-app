@@ -1,6 +1,6 @@
 apiVersion: v1
 data:
-  PMA_HOST: 10.96.201.238
+  PMA_HOST: 10.111.161.247
   PMA_PORT: "3306"
 kind: ConfigMap
 metadata:
