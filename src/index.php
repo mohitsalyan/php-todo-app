@@ -1,6 +1,6 @@
 <?php 
 // Database connection
-$connection = mysqli_connect('10.96.200.23', 'root', 'rootpassword', 'mydb');
+$connection = mysqli_connect('10.96.200.23', 'root', 'rootpassword', 'timeseries_schema');
 
 // Check connection
 if (!$connection) {
